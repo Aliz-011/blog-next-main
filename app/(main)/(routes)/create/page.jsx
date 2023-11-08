@@ -187,10 +187,11 @@ const CreatePage = () => {
 
                   <div className="grid gap-2">
                     <Label>Upload Image</Label>
-                    <SingleImageDropzone
+                    <Input
                       onChange={onChange}
-                      value={file || ''}
+                      value={file}
                       disabled={isSubmitting}
+                      type="file"
                     />
                   </div>
 
