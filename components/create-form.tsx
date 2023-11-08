@@ -31,7 +31,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { SingleImageDropzone } from '@/components/single-image-dropzone';
 import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
@@ -169,18 +168,31 @@ const CreateForm = () => {
 
                 <div className="grid gap-2">
                   <Label>Upload Image</Label>
-                  <SingleImageDropzone
-                    onChange={async (file?: File) => {
-                      if (file) {
-                        setFile(file);
+                  {file && (
+                    <div>
+                      <picture>
+                        <img
+                          alt="not found"
+                          className="w-full"
+                          src={URL.createObjectURL(file)}
+                        />
+                      </picture>
+                      <br />
+                      <button onClick={() => setFile(undefined)}>Remove</button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    name="myImage"
+                    onChange={async (event) => {
+                      if (event.target.files) {
+                        setFile(event.target.files![0]);
                         const res = await edgestore.publicFiles.upload({
-                          file,
+                          file: event.target.files![0],
                         });
                         setUrl(res.url);
                       }
                     }}
-                    value={file}
-                    disabled={isSubmitting}
                   />
                 </div>
 
