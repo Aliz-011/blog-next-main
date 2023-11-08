@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import Editor from '@/components/editor';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Card,
   CardContent,
@@ -61,14 +61,6 @@ const CreateForm = () => {
       content: '',
     },
   });
-
-  const onChange = async (file?: File) => {
-    if (file) {
-      setFile(file);
-      const res = await edgestore.publicFiles.upload({ file });
-      setUrl(res.url);
-    }
-  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -162,7 +154,12 @@ const CreateForm = () => {
                       <FormItem>
                         <FormLabel>Content</FormLabel>
                         <FormControl>
-                          <Editor {...field} />
+                          <Textarea
+                            className="bg-white"
+                            disabled={isSubmitting}
+                            placeholder="This content about..."
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -173,7 +170,15 @@ const CreateForm = () => {
                 <div className="grid gap-2">
                   <Label>Upload Image</Label>
                   <SingleImageDropzone
-                    onChange={onChange}
+                    onChange={async (file?: File) => {
+                      if (file) {
+                        setFile(file);
+                        const res = await edgestore.publicFiles.upload({
+                          file,
+                        });
+                        setUrl(res.url);
+                      }
+                    }}
                     value={file}
                     disabled={isSubmitting}
                   />

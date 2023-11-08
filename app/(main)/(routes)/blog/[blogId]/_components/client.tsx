@@ -19,14 +19,14 @@ import {
 
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
-import { useConvexAuth, useMutation, useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/clerk-react';
 import { isAdmin } from '@/lib/admin';
 
 const formSchema = z.object({
-  content: z.string().min(1, {
+  content: z.string().min(10, {
     message: 'description is required',
   }),
 });
@@ -49,7 +49,7 @@ const BlogIdClient = ({ id }: { id: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      content: news?.content!,
+      content: news?.content || '',
     },
   });
 
@@ -67,6 +67,7 @@ const BlogIdClient = ({ id }: { id: string }) => {
 
       toggleEdit();
       toast.success('Success updating the news!');
+      router.refresh();
     } catch (error: any) {
       toast.error(error.message!);
     } finally {
@@ -135,7 +136,10 @@ const BlogIdClient = ({ id }: { id: string }) => {
 
         {isEditing && (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 mt-4"
+            >
               <FormField
                 control={form.control}
                 name="content"
@@ -148,7 +152,7 @@ const BlogIdClient = ({ id }: { id: string }) => {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-end">
+              <div className="flex items-center gap-x-2">
                 <Button type="submit" disabled={isSubmitting}>
                   Save
                 </Button>
