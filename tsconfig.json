@@ -27,7 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "convex/auth.config.js"
+    "convex/auth.config.js",
+    "app/(main)/(routes)/create/page.jsx"
   ],
   "exclude": ["node_modules"]
 }

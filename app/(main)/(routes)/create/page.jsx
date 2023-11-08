@@ -50,21 +50,25 @@ const CreatePage = () => {
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState();
   const [url, setUrl] = useState('');
 
   const create = useMutation(api.news.createNews);
   const { edgestore } = useEdgeStore();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      content: '',
-    },
-  });
+  const form =
+    useForm <
+    z.infer <
+    typeof formSchema >>
+      {
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+          title: '',
+          content: '',
+        },
+      };
 
-  const onChange = async (file?: File) => {
+  const onChange = async (file) => {
     if (file) {
       setFile(file);
       const res = await edgestore.publicFiles.upload({ file });
@@ -72,7 +76,7 @@ const CreatePage = () => {
     }
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values) {
     setIsSubmitting(true);
     await create({
       ...values,
